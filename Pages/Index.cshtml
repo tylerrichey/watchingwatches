@@ -1,4 +1,6 @@
-﻿@page
+﻿@using  System.Globalization
+
+@page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -18,7 +20,7 @@
             {
                 <tr class=@(d.PriceReduced ? "success" : "")>
                     <td><a href="@d.Watch.Url">@d.Watch.Name</a></td>
-                    <td>@d.Watch.Price.ToString("C")</td>
+                    <td>@d.Watch.Price.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))</td>
                     <td>@d.Watch.When.ToShortDateString()</td>
                 </tr>
             }
