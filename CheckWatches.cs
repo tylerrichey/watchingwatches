@@ -10,7 +10,7 @@ namespace WatchingWatches
 {
     public static class CheckWatches
     {
-        private const string _dbFile = @"db\data.db";
+        private const string _dbFile = @"Filename=db\data.db";
         private static IEnumerable<string> _urls = File.ReadAllLines(@"db\watches.txt");
 
         private static WatchPriceCheck PriceCheck(string url)
