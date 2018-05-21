@@ -76,7 +76,17 @@ namespace WatchingWatches
                 return prices.FindAll()
                     .OrderByDescending(p => p.When)
                     .Take(30);
-                
+            }
+        }
+
+        public static IEnumerable<WatchPriceCheck> GetForWatch(string url, DateTime from)
+        {
+            using (var db = new LiteDatabase(_dbFile))
+            {
+                var prices = db.GetCollection<WatchPriceCheck>("watchPriceCheck");
+                return prices.FindAll()
+                    .Where(w => w.Url == url && w.When <= from)
+                    .OrderBy(w => w.When);
             }
         }
 

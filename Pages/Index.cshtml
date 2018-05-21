@@ -1,6 +1,7 @@
-﻿@using  System.Globalization
+﻿@page
+@using System.Globalization
+@using System.Net
 
-@page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -13,6 +14,7 @@
                 <th>Name</th>
                 <th>Price</th>
                 <th>When</th>
+                <th>Graph</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +24,7 @@
                     <td><a href="@d.Watch.Url">@d.Watch.Name</a></td>
                     <td>@d.Watch.Price.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))</td>
                     <td>@d.Watch.When.ToShortDateString()</td>
+                    <td><a href="/Charts?url=@WebUtility.UrlEncode(d.Watch.Url)&fromDateTicks=@d.Watch.When.Ticks">Graph</a></td>
                 </tr>
             }
         </tbody>
