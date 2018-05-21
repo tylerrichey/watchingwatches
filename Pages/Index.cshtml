@@ -1,0 +1,27 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="table-responsive">
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>When</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in Model.WatchPriceDtos)
+            {
+                <tr class=@(d.PriceReduced ? "success" : "")>
+                    <td><a href="@d.Watch.Url">@d.Watch.Name</a></td>
+                    <td>@d.Watch.Price.ToString("C")</td>
+                    <td>@d.Watch.When.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
