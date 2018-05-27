@@ -19,7 +19,7 @@ namespace WatchingWatches
             BuildWebHost(args).Run();
         }
 
-        private static void TimerTask(Object stateInfo = null) => CheckWatches.UpdatePrices();
+        private static void TimerTask(Object stateInfo) => CheckWatches.UpdatePrices();
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)

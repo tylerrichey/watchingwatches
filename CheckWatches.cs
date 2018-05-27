@@ -42,6 +42,7 @@ namespace WatchingWatches
 
         public static void UpdatePrices()
         {
+
             Console.WriteLine("Updating prices...");
             using (var db = new LiteDatabase(_dbFile))
             {
