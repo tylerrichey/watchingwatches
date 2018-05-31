@@ -13,9 +13,11 @@ namespace WatchingWatches
 {
     public static class Program
     {
+        private static Timer _timer;
+
         public static void Main(string[] args)
         {
-            var _timer = new Timer(TimerTask, null, TimeSpan.FromMilliseconds(0), TimeSpan.FromDays(1));
+            _timer = new Timer(TimerTask, null, TimeSpan.FromMilliseconds(0), TimeSpan.FromDays(1));
             BuildWebHost(args).Run();
         }
 

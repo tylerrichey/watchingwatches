@@ -14,7 +14,7 @@ namespace WatchingWatches.Pages
         public IActionResult Get()
         {
             CheckWatches.UpdatePrices();
-            return RedirectToAction("/Index");
+            return RedirectToPage("/Index");
         }
     }
 }
