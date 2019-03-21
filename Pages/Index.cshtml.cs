@@ -16,7 +16,7 @@ namespace WatchingWatches.Pages
         {
             var prices = new List<WatchPriceDto>();
             var data = CheckWatches.GetPriceSummary()
-                .Where(d => (!old && CheckWatches.Urls.Contains(d.Url)) || old);
+                .Where(d => old ^ CheckWatches.Urls.Contains(d.Url));
             foreach (var w in data)
             {
                 var next = data.Where(d => d.Url == w.Url && d.When < w.When)

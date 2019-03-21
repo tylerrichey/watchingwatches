@@ -77,8 +77,7 @@ namespace WatchingWatches
             {
                 var prices = db.GetCollection<WatchPriceCheck>("watchPriceCheck");
                 return prices.FindAll()
-                    .OrderByDescending(p => p.When)
-                    .Take(30);
+                    .OrderByDescending(p => p.When);
             }
         }
 
