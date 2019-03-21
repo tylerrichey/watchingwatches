@@ -10,8 +10,8 @@ namespace WatchingWatches
 {
     public static class CheckWatches
     {
-        private const string _dbFile = @"Filename=db/data.db";
-        private static IEnumerable<string> _urls = File.ReadAllLines(@"db/watches.txt");
+        private const string _dbFile = "Filename=db/data.db";
+        public static readonly IEnumerable<string> Urls = File.ReadAllLines("db/watches.txt");
 
         private static WatchPriceCheck PriceCheck(string url)
         {
@@ -19,7 +19,7 @@ namespace WatchingWatches
             var data = web.Load(url);
             var name = data.DocumentNode
                 .Descendants("h1")
-                .FirstOrDefault()
+                .FirstOrDefault()?
                 .InnerText;
             var watchPrice = data.DocumentNode
                 .Descendants("span")
@@ -29,7 +29,7 @@ namespace WatchingWatches
                 throw new ApplicationException("Could not find price, probably sold out.");
             }
             var price = watchPrice.Attributes
-                .FirstOrDefault(w => w.Name == "content")
+                .FirstOrDefault(w => w.Name == "content")?
                 .Value;
             return new WatchPriceCheck
             {
@@ -42,23 +42,25 @@ namespace WatchingWatches
 
         public static void UpdatePrices()
         {
-
             Console.WriteLine("Updating prices...");
             using (var db = new LiteDatabase(_dbFile))
             {
                 var prices = db.GetCollection<WatchPriceCheck>("watchPriceCheck");
-                foreach (var u in _urls)
+                foreach (var u in Urls)
                 {
                     try
                     {
                         var current = prices.Find(p => p.Url.Equals(u))
                             .OrderByDescending(p => p.When)
                             .FirstOrDefault();
-                        var update = PriceCheck(u);
-                        prices.Insert(update);
-                        if (current != null && current.Price != update.Price)
+                        if (current.When.ToShortDateString() != DateTime.Now.ToShortDateString())
                         {
-                            Console.WriteLine($"{update.Name}\tPrice change: {current.Price} => {update.Price}");
+                            var update = PriceCheck(u);
+                            prices.Insert(update);
+                            if (current != null && current.Price != update.Price)
+                            {
+                                Console.WriteLine($"{update.Name}\tPrice change: {current.Price} => {update.Price}");
+                            }
                         }
                     }
                     catch (Exception e)

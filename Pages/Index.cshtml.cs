@@ -12,10 +12,11 @@ namespace WatchingWatches.Pages
     {
         public List<WatchPriceDto> WatchPriceDtos { get; internal set; }
 
-        public void OnGet()
+        public void OnGet(bool old = false)
         {
             var prices = new List<WatchPriceDto>();
-            var data = CheckWatches.GetPriceSummary();
+            var data = CheckWatches.GetPriceSummary()
+                .Where(d => (!old && CheckWatches.Urls.Contains(d.Url)) || old);
             foreach (var w in data)
             {
                 var next = data.Where(d => d.Url == w.Url && d.When < w.When)
