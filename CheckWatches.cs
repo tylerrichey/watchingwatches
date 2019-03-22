@@ -11,7 +11,8 @@ namespace WatchingWatches
     public static class CheckWatches
     {
         private const string _dbFile = "Filename=db/data.db";
-        public static readonly IEnumerable<string> Urls = File.ReadAllLines("db/watches.txt");
+        private const string urlFile = "db/watches.txt";
+        public static readonly IEnumerable<string> Urls = File.ReadAllLines(urlFile);
 
         private static WatchPriceCheck PriceCheck(string url)
         {
@@ -26,7 +27,7 @@ namespace WatchingWatches
                 .FirstOrDefault(d => d.Id == "ProductPrice-product-template");
             if (watchPrice == null)
             {
-                throw new ApplicationException("Could not find price, probably sold out.");
+                throw new SoldOutException("Could not find price, probably sold out.");
             }
             var price = watchPrice.Attributes
                 .FirstOrDefault(w => w.Name == "content")?
@@ -43,10 +44,11 @@ namespace WatchingWatches
         public static void UpdatePrices()
         {
             Console.WriteLine("Updating prices...");
+            var urls = Urls.ToList();
             using (var db = new LiteDatabase(_dbFile))
             {
                 var prices = db.GetCollection<WatchPriceCheck>("watchPriceCheck");
-                foreach (var u in Urls)
+                foreach (var u in urls)
                 {
                     try
                     {
@@ -62,6 +64,12 @@ namespace WatchingWatches
                                 Console.WriteLine($"{update.Name}\tPrice change: {current.Price} => {update.Price}");
                             }
                         }
+                    }
+                    catch (SoldOutException)
+                    {
+                        urls.RemoveAll(x => x == u);
+                        File.WriteAllLines(urlFile, urls);
+                        throw;
                     }
                     catch (Exception e)
                     {
