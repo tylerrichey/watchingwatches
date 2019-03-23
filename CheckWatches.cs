@@ -14,24 +14,51 @@ namespace WatchingWatches
         private const string urlFile = "db/watches.txt";
         public static readonly IEnumerable<string> Urls = File.ReadAllLines(urlFile);
 
+        public static string CleanHtmlText(this string value) => value.Replace("\n", "").Trim();
+
         private static WatchPriceCheck PriceCheck(string url)
         {
+            var name = string.Empty;
+            var price = string.Empty;
             var web = new HtmlWeb();
             var data = web.Load(url);
-            var name = data.DocumentNode
-                .Descendants("h1")
-                .FirstOrDefault()?
-                .InnerText;
-            var watchPrice = data.DocumentNode
-                .Descendants("span")
-                .FirstOrDefault(d => d.Id == "ProductPrice-product-template");
-            if (watchPrice == null)
+
+            if (url.Contains("crownandcaliber", StringComparison.OrdinalIgnoreCase))
             {
-                throw new SoldOutException("Could not find price, probably sold out.");
+                name = data.DocumentNode
+                    .Descendants("h1")
+                    .FirstOrDefault()?
+                    .InnerText;
+                var watchPrice = data.DocumentNode
+                    .Descendants("span")
+                    .FirstOrDefault(d => d.Id == "ProductPrice-product-template");
+                if (watchPrice == null)
+                {
+                    throw new SoldOutException("Could not find price, probably sold out.");
+                }
+                price = watchPrice.Attributes
+                    .FirstOrDefault(w => w.Name == "content")?
+                    .Value;
             }
-            var price = watchPrice.Attributes
-                .FirstOrDefault(w => w.Name == "content")?
-                .Value;
+            else if (url.Contains("chrono24", StringComparison.OrdinalIgnoreCase))
+            {
+                name = data.DocumentNode
+                    .Descendants("h1")
+                    .FirstOrDefault()?
+                    .InnerText
+                    .CleanHtmlText();
+                var watchPrice = data.DocumentNode
+                    .Descendants("span")
+                    .ToArray()[29];
+                if (watchPrice == null)
+                {
+                    throw new SoldOutException("Could not find price, probably sold out.");
+                }
+                price = watchPrice
+                    .InnerText
+                    .CleanHtmlText();
+            }
+
             return new WatchPriceCheck
             {
                 Name = name,
