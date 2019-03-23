@@ -14,7 +14,7 @@ namespace WatchingWatches
         private const string urlFile = "db/watches.txt";
         public static readonly IEnumerable<string> Urls = File.ReadAllLines(urlFile);
 
-        public static string CleanHtmlText(this string value) => value.Replace("\n", "").Trim();
+        public static string CleanHtmlText(this string value) => value.Replace("\n", "").Replace("$", "").Trim();
 
         private static WatchPriceCheck PriceCheck(string url)
         {
