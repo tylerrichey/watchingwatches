@@ -82,7 +82,7 @@ namespace WatchingWatches
                         var current = prices.Find(p => p.Url.Equals(u))
                             .OrderByDescending(p => p.When)
                             .FirstOrDefault();
-                        if (current.When.ToShortDateString() != DateTime.Now.ToShortDateString())
+                        if (current == null || current.When.ToShortDateString() != DateTime.Now.ToShortDateString())
                         {
                             var update = PriceCheck(u);
                             prices.Insert(update);
