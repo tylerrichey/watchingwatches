@@ -49,7 +49,7 @@ namespace WatchingWatches
                     .CleanHtmlText();
                 var watchPrice = data.DocumentNode
                     .Descendants("span")
-                    .ToArray()[29];
+                    .FirstOrDefault(p => p.Attributes.Any(a => a.Name == "class" && a.Value == "price-lg"));
                 if (watchPrice == null)
                 {
                     throw new SoldOutException("Could not find price, probably sold out.");
